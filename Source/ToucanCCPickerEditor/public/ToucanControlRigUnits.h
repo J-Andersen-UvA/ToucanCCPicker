@@ -44,6 +44,60 @@ struct TOUCANCCPICKEREDITOR_API FToucanCurveValueMapping
 	TArray<FToucanWeightedCurve> Curves;
 };
 
+USTRUCT(BlueprintType)
+struct TOUCANCCPICKEREDITOR_API FToucanTongueJawValue
+{
+	GENERATED_BODY()
+
+	FToucanTongueJawValue()
+		: CurveName(NAME_None)
+		, UpperJawAdditive(FTransform::Identity)
+		, LowerJawAdditive(FTransform::Identity)
+		, TongueOut(0.f)
+		, TongueVertical(0.f)
+		, TongueHorizontal(0.f)
+		, TongueTipVertical(0.f)
+		, TongueTipHorizontal(0.f)
+	{}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input, CustomWidget = "CurveName"))
+	FName CurveName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	FTransform UpperJawAdditive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	FTransform LowerJawAdditive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	float TongueOut;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	float TongueVertical;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	float TongueHorizontal;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	float TongueTipVertical;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	float TongueTipHorizontal;
+};
+
+
+USTRUCT(BlueprintType)
+struct TOUCANCCPICKEREDITOR_API FToucanCurveValueTongueAndJawMapping
+{
+	GENERATED_BODY()
+
+	FToucanCurveValueTongueAndJawMapping()
+		: Name(NAME_None)
+	{}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input))
+	FName Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Toucan|Controls", meta = (Input, ExpandByDefault))
+	TArray<FToucanTongueJawValue> TongueJawValues;
+};
+
 USTRUCT(meta = (DisplayName = "Get Highest Control Value", Category = "Toucan|Controls", Keywords = "Toucan,ControlRig,Float,Channel,Highest,Max", NodeColor = "0.0 0.364706 1.0"))
 struct TOUCANCCPICKEREDITOR_API FRigUnit_ToucanGetHighestControlValue : public FRigUnit
 {

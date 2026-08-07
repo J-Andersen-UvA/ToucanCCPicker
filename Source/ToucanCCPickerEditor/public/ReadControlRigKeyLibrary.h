@@ -108,6 +108,27 @@ public:
 		TArray<FRigElementKey>& outModifiedKeys
 	);
 
+	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set This Control Current Value"))
+	static int32 setThisControlCurrentValue(
+		ULevelSequence* sequence,
+		const FControlRigSequencerBindingProxy& rigBinding,
+		FName ctrlName,
+		const TArray<FName>& skipList,
+		bool bIncludeAnimationChannels,
+		TArray<FRigElementKey>& outKeyedControls,
+		float tolerance = 0.01f
+	);
+
+	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set This Control Zero Value"))
+	static int32 setThisControlZeroValue(
+		ULevelSequence* sequence,
+		const FControlRigSequencerBindingProxy& rigBinding,
+		FName ctrlName,
+		const TArray<FName>& skipList,
+		bool bIncludeAnimationChannels,
+		TArray<FRigElementKey>& outKeyedControls
+	);
+
 	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer")
 	static bool duplicatePreviousControlKeyAtCurrentTime(
 		const FControlRigSequencerBindingProxy& rigBinding,

@@ -681,6 +681,81 @@ namespace
 				return false;
 		}
 	}
+
+	static bool isAnimationChannelSkipped(
+		FName parentControlName,
+		FName animationChannelName,
+		const TArray<FName>& animationChannelSkipList
+	)
+	{
+		if (animationChannelSkipList.Contains(animationChannelName))
+		{
+			return true;
+		}
+
+		const FName qualifiedChannelName(*FString::Printf(
+			TEXT("%s.%s"),
+			*parentControlName.ToString(),
+			*animationChannelName.ToString()
+		));
+		return animationChannelSkipList.Contains(qualifiedChannelName);
+	}
+
+	static bool isAnimationControlElementSkipped(
+		const URigHierarchy* hierarchy,
+		const FRigElementKey& controlKey,
+		const FRigControlElement* controlElement,
+		const TArray<FName>& animationChannelSkipList
+	)
+	{
+		if (!hierarchy || !controlElement || !controlElement->IsAnimationChannel())
+		{
+			return false;
+		}
+
+		if (animationChannelSkipList.Contains(controlKey.Name))
+		{
+			return true;
+		}
+
+		const FRigElementKey parentKey = hierarchy->GetFirstParent(controlKey);
+		if (parentKey.IsValid())
+		{
+			return isAnimationChannelSkipped(parentKey.Name, controlKey.Name, animationChannelSkipList);
+		}
+
+		return false;
+	}
+
+	static bool isControlSkippedByNameOrQualifiedName(
+		const URigHierarchy* hierarchy,
+		const FRigElementKey& controlKey,
+		const TArray<FName>& skipList
+	)
+	{
+		if (skipList.Contains(controlKey.Name))
+		{
+			return true;
+		}
+
+		if (!hierarchy)
+		{
+			return false;
+		}
+
+		const FRigElementKey parentKey = hierarchy->GetFirstParent(controlKey);
+		if (!parentKey.IsValid())
+		{
+			return false;
+		}
+
+		const FName qualifiedControlName(*FString::Printf(
+			TEXT("%s.%s"),
+			*parentKey.Name.ToString(),
+			*controlKey.Name.ToString()
+		));
+		return skipList.Contains(qualifiedControlName);
+	}
 }
 
 bool UReadControlRigKeyLibrary::buildControlRigKeyCache(
@@ -958,6 +1033,7 @@ int32 UReadControlRigKeyLibrary::setThisControlCurrentValue(
 	const FControlRigSequencerBindingProxy& rigBinding,
 	FName ctrlName,
 	const TArray<FName>& skipList,
+	const TArray<FName>& animationChannelSkipList,
 	bool bIncludeAnimationChannels,
 	TArray<FRigElementKey>& outKeyedControls,
 	float tolerance
@@ -985,6 +1061,15 @@ int32 UReadControlRigKeyLibrary::setThisControlCurrentValue(
 		return 0;
 	}
 
+	if (
+		isControlSkippedByNameOrQualifiedName(hierarchy, controlKey, skipList) ||
+		isControlSkippedByNameOrQualifiedName(hierarchy, controlKey, animationChannelSkipList) ||
+		isAnimationControlElementSkipped(hierarchy, controlKey, controlElement, animationChannelSkipList)
+	)
+	{
+		return 0;
+	}
+
 	if (setControlCurrentValueIfModified(sequence, controlRig, controlElement, currentFrame, tolerance))
 	{
 		outKeyedControls.Add(controlKey);
@@ -994,7 +1079,11 @@ int32 UReadControlRigKeyLibrary::setThisControlCurrentValue(
 	{
 		for (const FRigElementKey& childKey : hierarchy->GetChildren(controlKey, true))
 		{
-			if (childKey.Type != ERigElementType::Control || skipList.Contains(childKey.Name))
+			if (
+				childKey.Type != ERigElementType::Control ||
+				isControlSkippedByNameOrQualifiedName(hierarchy, childKey, skipList) ||
+				isAnimationChannelSkipped(controlKey.Name, childKey.Name, animationChannelSkipList)
+			)
 			{
 				continue;
 			}
@@ -1020,6 +1109,7 @@ int32 UReadControlRigKeyLibrary::setThisControlZeroValue(
 	const FControlRigSequencerBindingProxy& rigBinding,
 	FName ctrlName,
 	const TArray<FName>& skipList,
+	const TArray<FName>& animationChannelSkipList,
 	bool bIncludeAnimationChannels,
 	TArray<FRigElementKey>& outKeyedControls
 )
@@ -1046,6 +1136,15 @@ int32 UReadControlRigKeyLibrary::setThisControlZeroValue(
 		return 0;
 	}
 
+	if (
+		isControlSkippedByNameOrQualifiedName(hierarchy, controlKey, skipList) ||
+		isControlSkippedByNameOrQualifiedName(hierarchy, controlKey, animationChannelSkipList) ||
+		isAnimationControlElementSkipped(hierarchy, controlKey, controlElement, animationChannelSkipList)
+	)
+	{
+		return 0;
+	}
+
 	if (setControlZeroValue(sequence, controlRig, controlElement, currentFrame))
 	{
 		outKeyedControls.Add(controlKey);
@@ -1055,7 +1154,11 @@ int32 UReadControlRigKeyLibrary::setThisControlZeroValue(
 	{
 		for (const FRigElementKey& childKey : hierarchy->GetChildren(controlKey, true))
 		{
-			if (childKey.Type != ERigElementType::Control || skipList.Contains(childKey.Name))
+			if (
+				childKey.Type != ERigElementType::Control ||
+				isControlSkippedByNameOrQualifiedName(hierarchy, childKey, skipList) ||
+				isAnimationChannelSkipped(controlKey.Name, childKey.Name, animationChannelSkipList)
+			)
 			{
 				continue;
 			}

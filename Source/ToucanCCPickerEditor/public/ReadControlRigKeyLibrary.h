@@ -108,23 +108,25 @@ public:
 		TArray<FRigElementKey>& outModifiedKeys
 	);
 
-	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set This Control Current Value"))
+	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set This Control Current Value", AutoCreateRefTerm = "skipList,animationChannelSkipList"))
 	static int32 setThisControlCurrentValue(
 		ULevelSequence* sequence,
 		const FControlRigSequencerBindingProxy& rigBinding,
 		FName ctrlName,
 		const TArray<FName>& skipList,
+		const TArray<FName>& animationChannelSkipList,
 		bool bIncludeAnimationChannels,
 		TArray<FRigElementKey>& outKeyedControls,
 		float tolerance = 0.01f
 	);
 
-	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set This Control Zero Value"))
+	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set This Control Zero Value", AutoCreateRefTerm = "skipList,animationChannelSkipList"))
 	static int32 setThisControlZeroValue(
 		ULevelSequence* sequence,
 		const FControlRigSequencerBindingProxy& rigBinding,
 		FName ctrlName,
 		const TArray<FName>& skipList,
+		const TArray<FName>& animationChannelSkipList,
 		bool bIncludeAnimationChannels,
 		TArray<FRigElementKey>& outKeyedControls
 	);

@@ -14,5 +14,15 @@
     }
   ],
   "CanContainContent": true,
-  "EnabledByDefault": true
+  "EnabledByDefault": true,
+  "Plugins": [
+    {
+      "Name": "NamedTransformCache",
+      "Enabled": true
+    },
+    {
+      "Name": "SequencerAbstraction",
+      "Enabled": true
+    }
+  ]
 }

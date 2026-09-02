@@ -23,6 +23,18 @@
     {
       "Name": "SequencerAbstraction",
       "Enabled": true
+    },
+    {
+      "Name": "ControlRig",
+      "Enabled": true
+    },
+    {
+      "Name": "RigVM",
+      "Enabled": true
+    },
+    {
+      "Name": "LevelSequenceEditor",
+      "Enabled": true
     }
   ]
 }

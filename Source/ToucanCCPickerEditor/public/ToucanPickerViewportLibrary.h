@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ControlRig.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ToucanPickerViewportLibrary.generated.h"
 
@@ -26,5 +27,14 @@ public:
         const FTransform& controlTransform,
         EToucanControlAxis alignAxis,
         float cameraDistance = 100.0f
+    );
+
+    UFUNCTION(BlueprintCallable, Category="Toucan|Control Rig")
+    static int32 setControlRigControlSelection(
+        UControlRig* controlRig,
+        const TArray<FName>& controlNames,
+        bool clearPrevious,
+        bool toggleSelection,
+        FString& errorMessage
     );
 };

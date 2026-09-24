@@ -120,6 +120,17 @@ public:
 		float tolerance = 0.01f
 	);
 
+	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set Control Current Values", AutoCreateRefTerm = "rigKeys,skipList,animationChannelSkipList"))
+	static int32 setControlCurrentValues(
+		ULevelSequence* sequence,
+		const FControlRigSequencerBindingProxy& rigBinding,
+		const TArray<FRigElementKey>& rigKeys,
+		const TArray<FName>& skipList,
+		const TArray<FName>& animationChannelSkipList,
+		bool bIncludeAnimationChannels,
+		TArray<FRigElementKey>& outKeyedControls,
+		float tolerance = 0.01f
+	);
 	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set This Control Zero Value", AutoCreateRefTerm = "skipList,animationChannelSkipList"))
 	static int32 setThisControlZeroValue(
 		ULevelSequence* sequence,
@@ -131,6 +142,16 @@ public:
 		TArray<FRigElementKey>& outKeyedControls
 	);
 
+	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer", meta = (DisplayName = "Set Control Zero Values", AutoCreateRefTerm = "rigKeys,skipList,animationChannelSkipList"))
+	static int32 setControlZeroValues(
+		ULevelSequence* sequence,
+		const FControlRigSequencerBindingProxy& rigBinding,
+		const TArray<FRigElementKey>& rigKeys,
+		const TArray<FName>& skipList,
+		const TArray<FName>& animationChannelSkipList,
+		bool bIncludeAnimationChannels,
+		TArray<FRigElementKey>& outKeyedControls
+	);
 	UFUNCTION(BlueprintCallable, Category = "Toucan|Sequencer")
 	static bool duplicatePreviousControlKeyAtCurrentTime(
 		const FControlRigSequencerBindingProxy& rigBinding,
